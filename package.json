@@ -1,0 +1,15 @@
+{
+  "name": "mui-timeout",
+  "version": "0.1.0",
+  "description": "material ui",
+  "main": "index.js",
+  "repository": "https://github.com/dbtek/mui-timeout.git",
+  "author": "İsmail Demirbilek <ce.demirbilek@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
+    "prop-types": "^15.6.2",
+    "react": "^16.7.0"
+  }
+}
