@@ -2,7 +2,7 @@
   "name": "mui-timeout",
   "version": "0.1.0",
   "description": "material ui",
-  "main": "index.js",
+  "main": "dist/Timeout.js",
   "repository": "https://github.com/dbtek/mui-timeout.git",
   "author": "İsmail Demirbilek <ce.demirbilek@gmail.com>",
   "license": "MIT",
@@ -11,5 +11,14 @@
     "@material-ui/icons": "^3.0.2",
     "prop-types": "^15.6.2",
     "react": "^16.7.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-react": "^7.0.0"
+  },
+  "scripts": {
+    "build": "cd src&&babel *.js --out-dir ../dist"
   }
 }
