@@ -1,6 +1,6 @@
 {
   "name": "mui-timeout",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "material ui",
   "main": "dist/Timeout.js",
   "repository": "https://github.com/dbtek/mui-timeout.git",
@@ -13,9 +13,9 @@
     "react": "^16.7.0"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.3.0",
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
     "@babel/preset-react": "^7.0.0"
   },
   "scripts": {
