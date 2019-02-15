@@ -1,6 +1,6 @@
 {
   "name": "mui-timeout",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "material ui",
   "main": "dist/Timeout.js",
   "repository": "https://github.com/dbtek/mui-timeout.git",
