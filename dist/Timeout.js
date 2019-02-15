@@ -2,8 +2,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 import React, { Component } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, LinearProgress } from '@material-ui/core';
-import { differenceInMilliseconds, subMinutes, format } from 'date-fns';
-import { Refresh as RefreshIcon } from '@material-ui/icons';
+import { differenceInMilliseconds, subMinutes, format, isAfter } from 'date-fns';
 import PropTypes from 'prop-types';
 export default class TimeoutDialog extends Component {
   constructor(...args) {
@@ -43,8 +42,10 @@ export default class TimeoutDialog extends Component {
   }
 
   componentWillMount() {
+    const now = new Date();
     const triggerTime = subMinutes(this.props.end, this.props.interval);
-    const remaining = differenceInMilliseconds(triggerTime, new Date());
+    if (isAfter(now, triggerTime)) return;
+    const remaining = differenceInMilliseconds(triggerTime, now);
 
     if (remaining > 0) {
       this.trigger = setTimeout(this.handleInform, remaining);
@@ -81,13 +82,8 @@ export default class TimeoutDialog extends Component {
         open: open
       }, React.createElement(DialogTitle, null, title.ended), React.createElement(DialogContent, null, React.createElement(DialogContentText, null, content.ended)), React.createElement(DialogActions, null, React.createElement(Button, {
         color: "primary",
-        onClick: e => window.location.reload()
-      }, React.createElement(RefreshIcon, {
-        style: {
-          fontSize: 16,
-          marginRight: 5
-        }
-      }), "Reload")));
+        onClick: e => onActionClick(true)
+      }, actionButtonText.ended)));
     }
 
     return React.createElement(Dialog, {
@@ -98,8 +94,8 @@ export default class TimeoutDialog extends Component {
       color: color
     }), React.createElement(DialogTitle, null, title.inform), React.createElement(DialogContent, null, React.createElement(DialogContentText, null, content.inform), remaining && React.createElement(DialogContentText, null, "Remaining: ", format(remaining, 'mm:ss'))), React.createElement(DialogActions, null, React.createElement(Button, {
       color: "primary",
-      onClick: onActionClick
-    }, actionButtonText)));
+      onClick: e => onActionClick(false)
+    }, actionButtonText.inform)));
   }
 
 }
@@ -116,7 +112,10 @@ _defineProperty(TimeoutDialog, "defaultProps", {
     ended: 'Sorry, to continue using application please refresh page.',
     inform: 'Do you want to continue?'
   },
-  actionButtonText: 'Extend'
+  actionButtonText: {
+    ended: 'Reload',
+    inform: 'Extend'
+  }
 });
 
 _defineProperty(TimeoutDialog, "propTypes", {
