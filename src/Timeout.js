@@ -3,10 +3,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
   Button, LinearProgress
 } from '@material-ui/core'
-import { differenceInMilliseconds, subMinutes, format } from 'date-fns'
-import {
-  Refresh as RefreshIcon
-} from '@material-ui/icons'
+import { differenceInMilliseconds, subMinutes, format, isAfter } from 'date-fns'
 import PropTypes from 'prop-types'
 
 export default class TimeoutDialog extends Component {
@@ -27,7 +24,10 @@ export default class TimeoutDialog extends Component {
       ended: 'Sorry, to continue using application please refresh page.',
       inform: 'Do you want to continue?'
     },
-    actionButtonText: 'Extend'
+    actionButtonText: {
+      ended: 'Reload',
+      inform: 'Extend'
+    }
   }
 
   static propTypes = {
@@ -46,8 +46,10 @@ export default class TimeoutDialog extends Component {
   }
 
   componentWillMount () {
+    const now = new Date()
     const triggerTime = subMinutes(this.props.end, this.props.interval)
-    const remaining = differenceInMilliseconds(triggerTime, new Date())
+    if (isAfter(now, triggerTime)) return
+    const remaining = differenceInMilliseconds(triggerTime, now)
     if (remaining > 0) {
       this.trigger = setTimeout(this.handleInform, remaining)
     }
@@ -90,9 +92,8 @@ export default class TimeoutDialog extends Component {
             <DialogContentText>{content.ended}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button color="primary" onClick={e => window.location.reload()}>
-              <RefreshIcon style={{ fontSize: 16, marginRight: 5 }} />
-              Reload
+            <Button color="primary" onClick={e => onActionClick(true)}>
+              {actionButtonText.ended}
             </Button>
           </DialogActions>
         </Dialog>
@@ -108,7 +109,7 @@ export default class TimeoutDialog extends Component {
           {remaining && <DialogContentText>Remaining: {format(remaining, 'mm:ss')}</DialogContentText>}
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={onActionClick}>{actionButtonText}</Button>
+          <Button color="primary" onClick={e => onActionClick(false)}>{actionButtonText.inform}</Button>
         </DialogActions>
       </Dialog>
     )

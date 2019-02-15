@@ -30,7 +30,7 @@ import TimeoutDialog from 'mui-timeout'
 `end` `{Date} *`  
 End time.  
 
-`onActionClick` `{function} *`   
+`onActionClick` `{function(ended: Boolean)} *`   
 Action button click listener.  
 
 `interval` `{String}`  
@@ -48,8 +48,12 @@ Inform content.
 `content.ended` `{String}`  
 Content to show when timeout ends.  
 
-`actionButtonText` `{String}`  
+`actionButtonText` `{Object}`  
+`actionButtonText.inform` `{String}`  
 Text to show on action button.  
+
+`actionButtonText.ended` `{String}`  
+Text to show on action button when timeout ends.  
 
 `color` `{String}`  
 One of "primary" or "secondary".  
