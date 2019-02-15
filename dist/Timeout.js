@@ -2,7 +2,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 import React, { Component } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, LinearProgress } from '@material-ui/core';
-import { differenceInMilliseconds, subMinutes, format, isAfter } from 'date-fns';
+import { differenceInSeconds, subMinutes, format, isAfter } from 'date-fns';
 import PropTypes from 'prop-types';
 export default class TimeoutDialog extends Component {
   constructor(...args) {
@@ -14,15 +14,19 @@ export default class TimeoutDialog extends Component {
       remainin: 0
     });
 
-    _defineProperty(this, "handleInform", () => {
-      this.setState({
-        open: true
-      });
-      this.ticker = setInterval(this.handleTick, 1000);
-    });
-
     _defineProperty(this, "handleTick", () => {
-      const remaining = differenceInMilliseconds(this.props.end, new Date());
+      const now = new Date();
+      const {
+        interval,
+        end
+      } = this.props;
+      const remaining = differenceInSeconds(end, now);
+
+      if (remaining <= interval * 60 && !this.state.open) {
+        this.setState({
+          open: true
+        });
+      }
 
       if (remaining <= 0) {
         if (!this.ticker) return;
@@ -32,7 +36,7 @@ export default class TimeoutDialog extends Component {
         });
         clearInterval(this.ticker);
       } else {
-        const total = this.props.interval * 60000;
+        const total = this.props.interval * 60;
         this.setState({
           progress: 100 * (total - remaining) / total,
           remaining
@@ -42,14 +46,7 @@ export default class TimeoutDialog extends Component {
   }
 
   componentWillMount() {
-    const now = new Date();
-    const triggerTime = subMinutes(this.props.end, this.props.interval);
-    if (isAfter(now, triggerTime)) return;
-    const remaining = differenceInMilliseconds(triggerTime, now);
-
-    if (remaining > 0) {
-      this.trigger = setTimeout(this.handleInform, remaining);
-    }
+    this.ticker = setInterval(this.handleTick, 1000);
   }
 
   componentWillUnmount() {
@@ -92,7 +89,7 @@ export default class TimeoutDialog extends Component {
       variant: "determinate",
       value: progress,
       color: color
-    }), React.createElement(DialogTitle, null, title.inform), React.createElement(DialogContent, null, React.createElement(DialogContentText, null, content.inform), remaining && React.createElement(DialogContentText, null, "Remaining: ", format(remaining, 'mm:ss'))), React.createElement(DialogActions, null, React.createElement(Button, {
+    }), React.createElement(DialogTitle, null, title.inform), React.createElement(DialogContent, null, React.createElement(DialogContentText, null, content.inform), remaining && React.createElement(DialogContentText, null, "Remaining: ", format(new Date(remaining * 1000), 'mm:ss'))), React.createElement(DialogActions, null, React.createElement(Button, {
       color: "primary",
       onClick: e => onActionClick(false)
     }, actionButtonText.inform)));

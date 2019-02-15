@@ -3,7 +3,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
   Button, LinearProgress
 } from '@material-ui/core'
-import { differenceInMilliseconds, subMinutes, format, isAfter } from 'date-fns'
+import { differenceInSeconds, subMinutes, format, isAfter } from 'date-fns'
 import PropTypes from 'prop-types'
 
 export default class TimeoutDialog extends Component {
@@ -46,13 +46,7 @@ export default class TimeoutDialog extends Component {
   }
 
   componentWillMount () {
-    const now = new Date()
-    const triggerTime = subMinutes(this.props.end, this.props.interval)
-    if (isAfter(now, triggerTime)) return
-    const remaining = differenceInMilliseconds(triggerTime, now)
-    if (remaining > 0) {
-      this.trigger = setTimeout(this.handleInform, remaining)
-    }
+    this.ticker = setInterval(this.handleTick, 1000)    
   }
 
   componentWillUnmount () {
@@ -64,19 +58,19 @@ export default class TimeoutDialog extends Component {
     }
   }
 
-  handleInform = () => {
-    this.setState({ open: true })
-    this.ticker = setInterval(this.handleTick, 1000)
-  }
-
   handleTick = () => {
-    const remaining = differenceInMilliseconds(this.props.end, new Date())
+    const now = new Date()
+    const { interval, end } = this.props
+    const remaining = differenceInSeconds(end, now)
+    if (remaining <= interval * 60 && !this.state.open) {
+      this.setState({ open: true })
+    }
     if (remaining <= 0) {
       if (!this.ticker) return
       this.setState({ ended: true, progress: 1 })
       clearInterval(this.ticker)
     } else {
-      const total = this.props.interval * 60000
+      const total = this.props.interval * 60
       this.setState({ progress: 100 * (total - remaining) / total, remaining })
     }
   }
@@ -106,7 +100,7 @@ export default class TimeoutDialog extends Component {
         <DialogTitle>{title.inform}</DialogTitle>
         <DialogContent>
           <DialogContentText>{content.inform}</DialogContentText>
-          {remaining && <DialogContentText>Remaining: {format(remaining, 'mm:ss')}</DialogContentText>}
+          {remaining && <DialogContentText>Remaining: {format(new Date(remaining * 1000), 'mm:ss')}</DialogContentText>}
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={e => onActionClick(false)}>{actionButtonText.inform}</Button>
