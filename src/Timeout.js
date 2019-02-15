@@ -62,8 +62,11 @@ export default class TimeoutDialog extends Component {
     const now = new Date()
     const { interval, end } = this.props
     const remaining = differenceInSeconds(end, now)
-    if (remaining <= interval * 60 && !this.state.open) {
-      this.setState({ open: true })
+    if (remaining <= interval * 60) {
+      if (!this.state.open) this.setState({ open: true })
+    } else {
+      if (this.state.open) this.setState({ open: false })
+      return
     }
     if (remaining <= 0) {
       if (!this.ticker) return
