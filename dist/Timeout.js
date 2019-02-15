@@ -22,10 +22,15 @@ export default class TimeoutDialog extends Component {
       } = this.props;
       const remaining = differenceInSeconds(end, now);
 
-      if (remaining <= interval * 60 && !this.state.open) {
-        this.setState({
+      if (remaining <= interval * 60) {
+        if (!this.state.open) this.setState({
           open: true
         });
+      } else {
+        if (this.state.open) this.setState({
+          open: false
+        });
+        return;
       }
 
       if (remaining <= 0) {
