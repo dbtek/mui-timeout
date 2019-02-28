@@ -1,3 +1,5 @@
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 import React, { Component } from 'react';
@@ -11,7 +13,7 @@ export default class TimeoutDialog extends Component {
     _defineProperty(this, "state", {
       open: false,
       progress: 0,
-      remainin: 0
+      remaining: 0
     });
 
     _defineProperty(this, "handleTick", () => {
@@ -28,7 +30,8 @@ export default class TimeoutDialog extends Component {
         });
       } else {
         if (this.state.open) this.setState({
-          open: false
+          open: false,
+          ended: false
         });
         return;
       }
@@ -58,10 +61,6 @@ export default class TimeoutDialog extends Component {
     if (this.ticker) {
       clearInterval(this.ticker);
     }
-
-    if (this.trigger) {
-      clearTimeout(this.trigger);
-    }
   }
 
   render() {
@@ -72,20 +71,17 @@ export default class TimeoutDialog extends Component {
       ended
     } = this.state;
     const {
-      title,
-      content,
-      color,
-      actionButtonText,
-      onActionClick
+      inform: informProps,
+      ended: endedProps,
+      color
     } = this.props;
 
     if (ended) {
       return React.createElement(Dialog, {
         open: open
-      }, React.createElement(DialogTitle, null, title.ended), React.createElement(DialogContent, null, React.createElement(DialogContentText, null, content.ended)), React.createElement(DialogActions, null, React.createElement(Button, {
-        color: "primary",
-        onClick: e => onActionClick(true)
-      }, actionButtonText.ended)));
+      }, React.createElement(DialogTitle, null, endedProps.title), React.createElement(DialogContent, null, React.createElement(DialogContentText, null, endedProps.content)), React.createElement(DialogActions, null, React.createElement(Button, _extends({
+        color: "primary"
+      }, endedProps.actionButtonProps))));
     }
 
     return React.createElement(Dialog, {
@@ -94,10 +90,9 @@ export default class TimeoutDialog extends Component {
       variant: "determinate",
       value: progress,
       color: color
-    }), React.createElement(DialogTitle, null, title.inform), React.createElement(DialogContent, null, React.createElement(DialogContentText, null, content.inform), remaining && React.createElement(DialogContentText, null, "Remaining: ", format(new Date(remaining * 1000), 'mm:ss'))), React.createElement(DialogActions, null, React.createElement(Button, {
-      color: "primary",
-      onClick: e => onActionClick(false)
-    }, actionButtonText.inform)));
+    }), React.createElement(DialogTitle, null, informProps.title), React.createElement(DialogContent, null, React.createElement(DialogContentText, null, informProps.content), remaining && React.createElement(DialogContentText, null, "Remaining: ", format(new Date(remaining * 1000), 'mm:ss'))), React.createElement(DialogActions, null, React.createElement(Button, _extends({
+      color: "primary"
+    }, informProps.actionButtonProps))));
   }
 
 }

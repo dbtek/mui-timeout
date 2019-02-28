@@ -10,7 +10,7 @@ export default class TimeoutDialog extends Component {
   state = {
     open: false,
     progress: 0,
-    remainin: 0,
+    remaining: 0,
   }
 
   static defaultProps = {
@@ -53,9 +53,6 @@ export default class TimeoutDialog extends Component {
     if (this.ticker) {
       clearInterval(this.ticker)
     }
-    if (this.trigger) {
-      clearTimeout(this.trigger)
-    }
   }
 
   handleTick = () => {
@@ -80,18 +77,16 @@ export default class TimeoutDialog extends Component {
 
   render () {
     const { open, progress, remaining, ended } = this.state
-    const { title, content, color, actionButtonText, onActionClick } = this.props
+    const { inform: informProps, ended: endedProps, color } = this.props
     if (ended) {
       return (
         <Dialog open={open}>
-          <DialogTitle>{title.ended}</DialogTitle>
+          <DialogTitle>{endedProps.title}</DialogTitle>
           <DialogContent>
-            <DialogContentText>{content.ended}</DialogContentText>
+            <DialogContentText>{endedProps.content}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button color="primary" onClick={e => onActionClick(true)}>
-              {actionButtonText.ended}
-            </Button>
+            <Button color="primary" {...endedProps.actionButtonProps} />
           </DialogActions>
         </Dialog>
       )
@@ -100,13 +95,13 @@ export default class TimeoutDialog extends Component {
     return (
       <Dialog open={open}>
         <LinearProgress variant="determinate" value={progress} color={color} />
-        <DialogTitle>{title.inform}</DialogTitle>
+        <DialogTitle>{informProps.title}</DialogTitle>
         <DialogContent>
-          <DialogContentText>{content.inform}</DialogContentText>
+          <DialogContentText>{informProps.content}</DialogContentText>
           {remaining && <DialogContentText>Remaining: {format(new Date(remaining * 1000), 'mm:ss')}</DialogContentText>}
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={e => onActionClick(false)}>{actionButtonText.inform}</Button>
+          <Button color="primary" {...informProps.actionButtonProps} />
         </DialogActions>
       </Dialog>
     )
